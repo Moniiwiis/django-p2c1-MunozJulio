@@ -1,0 +1,1 @@
+Uso de gemini para completar datos de los json

@@ -38,14 +38,11 @@
 </style>
 
 <div class="container my-4">
-
-  <!-- Barra superior de catálogo -->
   <div class="catalogo-nav">
     <h1 class="mb-1">Catálogo de Dispositivos</h1>
     <p>Gestión y monitoreo del consumo energético</p>
   </div>
 
-  <!-- Tarjetas de resumen -->
   <div class="row g-3 mb-4">
     <div class="col-md-6">
       <div class="card card-transparente bg-primary bg-opacity-25 shadow-sm">
@@ -65,7 +62,6 @@
     </div>
   </div>
 
-  <!-- Tabla responsive -->
   <div class="card card-transparente shadow-sm">
     <div class="card-body">
       {% if dispositivos %}
@@ -96,7 +92,6 @@
         </table>
       </div>
       {% else %}
-      <!-- Estado vacío -->
       <div class="text-center py-5">
         <p class="fs-5 text-muted mb-0">No hay dispositivos registrados en el catálogo.</p>
       </div>

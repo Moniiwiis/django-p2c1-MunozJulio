@@ -1,0 +1,5 @@
+[
+  { "id": 1, "nombre": "Electrodomésticos", "descripcion": "Equipos de uso doméstico continuo o frecuente" },
+  { "id": 2, "nombre": "Climatización", "descripcion": "Sistemas de calefacción y aire acondicionado" },
+  { "id": 3, "nombre": "Iluminación", "descripcion": "Lámparas y luces" }
+]

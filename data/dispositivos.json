@@ -1,14 +1,10 @@
-[ 
-    {
-        "id": 1, 
-        "nombre": "Medidor inteligente", 
-        "estado": "Activo", 
-        "consumo_kwh": 18.4 
-    }, 
-    {
-        "id": 2, 
-        "nombre": "Climatizador", 
-        "estado": "Revisión", 
-        "consumo_kwh": 32.7 
-    }
-] 
+[
+  { "id": 1, "nombre": "Refrigerador", "consumo_kwh": 150.5, "zona_id": 1, "categoria_id": 1 },
+  { "id": 2, "nombre": "Microondas", "consumo_kwh": 45.0, "zona_id": 1, "categoria_id": 1 },
+  { "id": 3, "nombre": "Horno Eléctrico", "consumo_kwh": 80.0, "zona_id": 1, "categoria_id": 1 },
+  { "id": 4, "nombre": "Televisor OLED", "consumo_kwh": 35.0, "zona_id": 2, "categoria_id": 1 },
+  { "id": 5, "nombre": "Aire Acondicionado Split", "consumo_kwh": 180.0, "zona_id": 2, "categoria_id": 2 },
+  { "id": 6, "nombre": "Lámpara de Pie", "consumo_kwh": 12.0, "zona_id": 2, "categoria_id": 3 },
+  { "id": 7, "nombre": "Calefactor Portátil", "consumo_kwh": 120.0, "zona_id": 3, "categoria_id": 2 },
+  { "id": 8, "nombre": "Luz Techo LED", "consumo_kwh": 8.5, "zona_id": 3, "categoria_id": 3 }
+]
