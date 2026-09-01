@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Dispositivos | EcoEnergy{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #ffffff !important;
+  }
+
+  .catalogo-nav {
+    background: linear-gradient(120deg, #2e7d32 0%, #43a047 40%, #66bb6a 70%, #a5d6a7 100%);
+    background-image: 
+      linear-gradient(120deg, rgba(46,125,50,0.95) 0%, rgba(67,160,71,0.9) 40%, rgba(102,187,106,0.85) 70%, rgba(165,214,167,0.8) 100%),
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px);
+    border-radius: 1rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 20px rgba(46, 125, 50, 0.25);
+    color: #fff;
+  }
+
+  .catalogo-nav h1 {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+
+  .catalogo-nav p {
+    opacity: 0.9;
+    margin-bottom: 0;
+  }
+
+  .card-transparente {
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+</style>
+
+<div class="container my-4">
+
+  <!-- Barra superior de catálogo -->
+  <div class="catalogo-nav">
+    <h1 class="mb-1">Catálogo de Dispositivos</h1>
+    <p>Gestión y monitoreo del consumo energético</p>
+  </div>
+
+  <!-- Tarjetas de resumen -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-6">
+      <div class="card card-transparente bg-primary bg-opacity-25 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary-emphasis">Total de Dispositivos</h5>
+          <p class="card-text display-6 mb-0 text-primary-emphasis">{{ total }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card card-transparente bg-success bg-opacity-25 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-success-emphasis">Dispositivos Activos</h5>
+          <p class="card-text display-6 mb-0 text-success-emphasis">{{ total_activos }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla responsive -->
+  <div class="card card-transparente shadow-sm">
+    <div class="card-body">
+      {% if dispositivos %}
+      <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Consumo (kWh)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for dispositivo in dispositivos %}
+            <tr>
+              <td>{{ dispositivo.nombre }}</td>
+              <td>
+                {% if dispositivo.estado == "Activo" %}
+                <span class="badge bg-success">{{ dispositivo.estado }}</span>
+                {% else %}
+                <span class="badge bg-secondary">{{ dispositivo.estado }}</span>
+                {% endif %}
+              </td>
+              <td>{{ dispositivo.consumo_kwh }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <!-- Estado vacío -->
+      <div class="text-center py-5">
+        <p class="fs-5 text-muted mb-0">No hay dispositivos registrados en el catálogo.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

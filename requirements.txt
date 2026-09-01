@@ -1,0 +1,7 @@
+asgiref==3.12.1
+Django==6.1
+django-bootstrap5==26.2
+dnspython==2.8.0
+pymongo==4.17.0
+sqlparse==0.6.0
+tzdata==2026.3

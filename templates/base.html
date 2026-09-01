@@ -1,0 +1,17 @@
+{% load django_bootstrap5 %}
+<!doctype html>
+<html lang="es">
+<head>
+        <meta charset="utf-8">
+        <title>{% block title %}EcoEnergy{% endblock %}</title>
+        {% bootstrap_css %}
+</head>
+<body>
+        <nav>
+                <a href="{% url 'dispositivos:inicio' %}">Inicio</a>
+                <a href="{% url 'dispositivos:catalogo' %}">Dispositivos</a>
+        </nav>
+        <main>{% block content %}{% endblock %}</main>
+        {% bootstrap_javascript %}
+</body>
+</html>
