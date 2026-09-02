@@ -1,43 +1,81 @@
-# Proyecto Django - Aprendizaje (Back End)
+# Sistema de Monitoreo Energético EcoEnergy - Django (Fase 1)
 
-## Descripción y objetivo
-Este proyecto ha sido desarrollado como parte de las actividades académicas para el aprendizaje de desarrollo Back End utilizando el framework Django en Python. El objetivo principal es poner en práctica los fundamentos del desarrollo web, la gestión de modelos, vistas y rutas dentro del ecosistema de Django.
+Aplicación web desarrollada en Django para el monitoreo dinámico de zonas de consumo energético y dispositivos instalados, utilizando procesamiento de colecciones JSON del lado del servidor.
 
-## Requisitos previos
-Para ejecutar este proyecto en tu entorno local, asegúrate de tener instalado:
-* Python: v3.14.5
-* pip: Gestor de paquetes de Python.
-* Git: Para el control de versiones.
+---
 
-## Instalación
+## 1. Requisitos Previos
+- **Python**: v3.10 o superior (probadado en Python 3.12/3.14).
+- **pip**: Gestor de paquetes de Python.
+- **Git**: Sistema de control de versiones.
 
-### 1. Clonación del repositorio
-Abre tu terminal y ejecuta el siguiente comando para descargar el proyecto:
+---
+
+## 2. Instalación y Configuración
+
+### Clonación del Repositorio
+```bash
 git clone https://github.com/Moniiwiis/django-p2c1-MunozJulio.git
 cd django-p2c1-MunozJulio
+```
 
-### 2. Creación y activación de entorno virtual (.venv)
-Es recomendable aislar las dependencias del proyecto en un entorno virtual:
+### Creación y Activación del Entorno Virtual (.venv)
+- **Windows (PowerShell / Command Prompt)**:
+  ```powershell
+  python -m venv .venv
+  .venv\Scripts\activate
+  ```
+- **macOS / Linux**:
+  ```bash
+  python3 -m venv .venv
+  source .venv/bin/activate
+  ```
 
-* En Windows:
-python -m venv .venv
-.venv\Scripts\activate
-
-* En macOS/Linux:
-python3 -m venv .venv
-source .venv/bin/activate
-
-### 3. Instalación de dependencias
-Instala los paquetes necesarios definidos en el archivo requirements.txt:
+### Instalación de Dependencias
+```bash
 pip install -r requirements.txt
+```
 
-## Comandos de verificación
-Una vez instaladas las dependencias, puedes verificar que Django esté correctamente configurado intentando ejecutar el servidor de desarrollo:
+---
+
+## 3. Ejecución del Proyecto
+Para iniciar el servidor de desarrollo local de Django:
+```bash
 python manage.py runserver
-Si el comando se ejecuta sin errores, podrás acceder a la aplicación desde http://127.0.0.1:8000/ en tu navegador.
+```
+Acceda en el navegador a: `http://127.0.0.1:8000/`
 
-## Estado actual y próximos pasos
-* Estado actual: El proyecto se encuentra en etapa de desarrollo académico.
-* Próximos pasos:
-    * Continuar con la implementación de funcionalidades base según los requerimientos de la clase.
-    * Realizar las migraciones necesarias para la base de datos (python manage.py migrate).
+---
+
+## 4. Rutas Funcionales de la Aplicación
+
+| Ruta URL | Nombre de Ruta (`name`) | Descripción |
+| :--- | :--- | :--- |
+| `/` | `dispositivos:inicio` | Página de bienvenida e información general de EcoEnergy. |
+| `/zonas/` | `dispositivos:zonas` | Listado dinámico de todas las zonas de consumo registradas con conteo de dispositivos y acceso al detalle. |
+| `/zonas/<zona_id>/` | `dispositivos:zona_detalle` | Detalle específico de una zona: límite, consumo total (kWh), estado (`NORMAL` / `ALERTA`), y tabla de dispositivos instalados. |
+| `/dispositivos/` | `dispositivos:catalogo` | Catálogo general de todos los dispositivos registrados en el sistema. |
+
+---
+
+## 5. Comprobación y Verificación
+
+### Verificación de Configuración de Django
+```bash
+python manage.py check
+```
+
+### Pruebas de Funcionamiento y Escenarios
+1. **Listado de Zonas (`/zonas/`)**: Carga dinámica desde `data/zonas.json` y `data/dispositivos.json`.
+2. **Cálculo de Estados**:
+   - `NORMAL`: Consumo total $\le$ Límite de la zona.
+   - `ALERTA`: Consumo total $>$ Límite de la zona.
+3. **Zona sin Dispositivos**: Probar con la zona ID 4 (`/zonas/4/`), observando el mensaje informativo "Esta zona no tiene dispositivos", consumo `0.0 kWh` y estado `NORMAL`.
+4. **Respuesta 404 Controlada**: Probar ingresando a `/zonas/999/`, verificando que Django responde con la página 404 controlada (`Http404`).
+5. **Carga Dinámica JSON**: Si se agregan o modifican dispositivos en `data/dispositivos.json`, los cambios se reflejan inmediatamente en la aplicación al recargar la página en el navegador.
+
+---
+
+## 6. Documentación Adicional
+- **`ANALISIS.md`**: Explicación del modelo de datos, relaciones de entidades, llaves de conexión y la matriz de criterios de aceptación vs. componentes.
+- **`IA.md`**: Registro y declaración del uso responsable de herramientas de Inteligencia Artificial durante el desarrollo del proyecto.

@@ -1,19 +1,37 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from .services import cargar_dispositivos
 
 
-class CatalogoTests(TestCase):
-    def test_cargar_dispositivos_incluye_estado(self):
-        dispositivos = cargar_dispositivos()
-
-        self.assertTrue(dispositivos)
-        self.assertIn("estado", dispositivos[0])
-
-    def test_catalogo_renders_summary(self):
-        response = self.client.get(reverse("dispositivos:catalogo"))
-
+class DispositivosVistasTests(TestCase):
+    def test_inicio_view(self):
+        response = self.client.get(reverse("dispositivos:inicio"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Total de Dispositivos")
-        self.assertContains(response, "Dispositivos Activos")
+        self.assertContains(response, "EcoEnergy")
+
+    def test_zonas_list_view(self):
+        response = self.client.get(reverse("dispositivos:zonas"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "ZONAS DE CONSUMO")
+
+    def test_zona_detalle_view_existente(self):
+        response = self.client.get(reverse("dispositivos:zona_detalle", args=[1]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Cocina")
+        self.assertContains(response, "Dispositivos Instalados")
+
+    def test_zona_detalle_view_sin_dispositivos(self):
+        response = self.client.get(reverse("dispositivos:zona_detalle", args=[4]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Bodega General")
+        self.assertContains(response, "Esta zona no tiene dispositivos")
+
+    def test_zona_detalle_view_404(self):
+        response = self.client.get(reverse("dispositivos:zona_detalle", args=[999]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_catalogo_view(self):
+        response = self.client.get(reverse("dispositivos:catalogo"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Catálogo de Dispositivos")
+

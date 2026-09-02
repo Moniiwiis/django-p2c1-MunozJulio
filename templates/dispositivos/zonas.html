@@ -4,39 +4,49 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-    <h1 class="h3">ZONAS DE CONSUMO</h1>
+    <div>
+        <h1 class="h3 mb-0 text-uppercase fw-bold text-dark">
+            <i class="bi bi-grid-3x3-gap me-2 text-primary"></i>ZONAS DE CONSUMO
+        </h1>
+        <p class="text-muted small mb-0">Consulte las zonas de monitoreo energético y acceda a su detalle.</p>
+    </div>
 </div>
 
 <div class="row g-4">
     {% for zona in zonas %}
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-secondary-subtle">
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-light-subtle rounded-3">
+                <div class="card-header bg-light border-bottom text-center py-3">
+                    <h2 class="card-title h5 text-uppercase fw-bold mb-0 text-secondary">
+                        <i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ zona.nombre }}
+                    </h2>
+                </div>
                 <div class="card-body text-center d-flex flex-column justify-content-between">
-                    <div>
-                        <h2 class="card-title h5 text-uppercase fw-bold">{{ zona.nombre }}</h2>
-                        <hr>
-                        <p class="card-text mb-1">
-                            <strong>Límite:</strong> {{ zona.limite_kwh }} kWh
+                    <div class="my-2">
+                        <p class="card-text mb-2 fs-6">
+                            <strong>Límite:</strong> <span class="text-dark font-monospace">{{ zona.limite_kwh }} kWh</span>
                         </p>
-                        <p class="card-text">
-                            <strong>Dispositivos:</strong> {{ zona.cantidad_dispositivos }}
+                        <p class="card-text mb-2 fs-6">
+                            <strong>Dispositivos:</strong> <span class="badge bg-secondary rounded-pill px-3">{{ zona.cantidad_dispositivos }}</span>
                         </p>
                     </div>
-                    <div class="mt-3">
-                        <a href="{% url 'dispositivos:zonas' zona.id %}" class="btn btn-outline-primary btn-sm w-100">
-                            [ Ver detalle ]
+                    <div class="mt-3 pt-2 border-top">
+                        <a href="{% url 'dispositivos:zona_detalle' zona.id %}" class="btn btn-outline-primary btn-sm px-4 fw-semibold">
+                            <i class="bi bi-eye me-1"></i> [ Ver detalle ]
                         </a>
                     </div>
                 </div>
             </div>
         </div>
     {% empty %}
-        <!-- Estado alternativo CA-01 -->
+        <!-- Estado alternativo (CA-01) -->
         <div class="col-12">
-            <div class="alert alert-warning text-center" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i> No hay zonas disponibles.
+            <div class="alert alert-warning text-center py-4 shadow-sm" role="alert">
+                <i class="bi bi-exclamation-triangle-fill fs-3 text-warning d-block mb-2"></i>
+                <h5 class="alert-heading fw-bold">No hay zonas disponibles</h5>
+                <p class="mb-0">Actualmente no existen zonas registradas en el sistema o el archivo JSON está vacío.</p>
             </div>
         </div>
     {% endfor %}
 </div>
-{% endblock %}
+{% endblock %}

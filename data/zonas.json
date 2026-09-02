@@ -1,5 +1,6 @@
 [
   { "id": 1, "nombre": "Cocina", "limite_kwh": 500.0 },
-  { "id": 2, "nombre": "Sala de Estar", "limite_kwh": 350.0 },
-  { "id": 3, "nombre": "Dormitorio Principal", "limite_kwh": 200.0 }
+  { "id": 2, "nombre": "Sala de Estar", "limite_kwh": 200.0 },
+  { "id": 3, "nombre": "Dormitorio Principal", "limite_kwh": 200.0 },
+  { "id": 4, "nombre": "Bodega General", "limite_kwh": 100.0 }
 ]

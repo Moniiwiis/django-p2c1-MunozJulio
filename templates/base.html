@@ -2,17 +2,77 @@
 <!doctype html>
 <html lang="es">
 <head>
-        <meta charset="utf-8">
-        <title>{% block title %}EcoEnergy{% endblock %}</title>
-        {% bootstrap_css %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}EcoEnergy - Monitoreo Energético{% endblock %}</title>
+    {% bootstrap_css %}
+    <!-- CDN de Bootstrap Icons para apoyo visual accesible (CA-12) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .table-responsive-custom {
+            max-height: 450px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
-        <nav>
-                <a href="/">Inicio</a>
-                <a href="/zonas/">Zonas</a>
-                <a href="/dispositivos/">Dispositivos</a>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="{% url 'dispositivos:inicio' %}">
+                    <i class="bi bi-lightning-charge-fill text-warning me-2 fs-4"></i>
+                    <span>ECOENERGY</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dispositivos:inicio' %}">
+                                <i class="bi bi-house-door me-1"></i> Inicio
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dispositivos:zonas' %}">
+                                <i class="bi bi-grid-3x3-gap-fill me-1"></i> Zonas de Consumo
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dispositivos:catalogo' %}">
+                                <i class="bi bi-cpu me-1"></i> Todos los Dispositivos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </nav>
-        <main>{% block content %}{% endblock %}</main>
-        {% bootstrap_javascript %}
+    </header>
+
+    <main class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-dark text-white-50 text-center py-3 mt-auto border-top border-secondary">
+        <div class="container">
+            <small>&copy; 2026 EcoEnergy - Sistema de Monitoreo Energético | Programación Back End (TI3041)</small>
+        </div>
+    </footer>
+
+    {% bootstrap_javascript %}
 </body>
 </html>
+

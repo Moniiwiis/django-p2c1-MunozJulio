@@ -1,36 +1,36 @@
-from django.http import HttpResponse
 from django.shortcuts import render
-
-from .services import cargar_dispositivos, cargar_json
+from .services import cargar_dispositivos, obtener_detalle_zona, obtener_zonas
 
 
 def inicio(request):
+    """Página de bienvenida de la aplicación EcoEnergy."""
     contexto = {
         "sistema": "EcoEnergy",
-        "mensaje": "Monitoreo energético responsable",
+        "mensaje": "Plataforma de Monitoreo Energético",
         "asignatura": "Programación Back End",
     }
     return render(request, "dispositivos/inicio.html", contexto)
 
 
-def zonas(request):
-    zonas = cargar_json("zonas.json")
+def zonas_list(request):
+    """Listado dinámico de todas las zonas de consumo."""
+    zonas = obtener_zonas()
     return render(request, "dispositivos/zonas.html", {"zonas": zonas})
 
 
-def dispositivos_zona(request, zona_id):
-    if zona_id not in (1, 2, 3):
-        return HttpResponse("Zona no encontrada", status=404)
-    return HttpResponse(f"Dispositivos de la zona {zona_id}")
+def zona_detalle(request, zona_id):
+    """Vista en detalle de una zona de consumo por su ID."""
+    detalle = obtener_detalle_zona(zona_id)
+    return render(request, "dispositivos/zona_detalle.html", detalle)
 
 
 def catalogo(request):
+    """Catálogo general de dispositivos."""
     dispositivos = cargar_dispositivos()
-    activos = sum(1 for item in dispositivos if item.get("estado") == "Activo")
     contexto = {
         "dispositivos": dispositivos,
         "total": len(dispositivos),
-        "total_activos": activos,
     }
     return render(request, "dispositivos/catalogo.html", contexto)
+
 
