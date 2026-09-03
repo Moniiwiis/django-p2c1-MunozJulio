@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .services import cargar_dispositivos, obtener_detalle_zona, obtener_zonas
+from .services import cargar_dispositivos, obtener_detalle_zona, obtener_zonas, obtener_resumen_zonas
 
 
 def inicio(request):
@@ -33,4 +33,13 @@ def catalogo(request):
     }
     return render(request, "dispositivos/catalogo.html", contexto)
 
+def resumen_zonas(request):
+    """Vista de resumen de consumo energético por zonas."""
+    print("Resumen de zonas:") 
+    resumen = obtener_resumen_zonas()
+    # Depuración: imprimir el resumen en la consola
+    print(resumen['zonas'])
 
+
+
+    return render(request, "dispositivos/resumen_zonas.html", {"resumen": resumen, "zonas": resumen['zonas']})

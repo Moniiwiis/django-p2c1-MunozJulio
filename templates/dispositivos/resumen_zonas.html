@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Resumen por Zonas | ECOENERGY{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+    <div>
+        <h1 class="h3 mb-0 text-uppercase fw-bold text-dark">
+            <i class="bi bi-geo-alt-fill me-2 text-primary"></i>Resumen por Zonas
+        </h1>
+        <p class="text-muted small mb-0">Detalle de consumo energético por zonas.</p>
+    </div>
+</div>
+
+<!-- Tarjetas de Métricas principales (CA-01, CA-03) -->
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 shadow-sm border-light-subtle rounded-3">
+            <div class="card-body text-center py-3">
+                <span class="text-muted small text-uppercase fw-semibold d-block mb-1">Zonas</span>
+                <h3 class="h4 font-monospace text-dark mb-0 fw-bold">{{ resumen.cantidad_zonas }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 shadow-sm border-light-subtle rounded-3">
+            <div class="card-body text-center py-3">
+                <span class="text-muted small text-uppercase fw-semibold d-block mb-1">Dispositivos</span>
+                <h3 class="h4 font-monospace text-dark mb-0 fw-bold">{{ resumen.cantidad_dispositivos }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 shadow-sm border-light-subtle rounded-3">
+            <div class="card-body text-center py-3">
+                <span class="text-muted small text-uppercase fw-semibold d-block mb-1">Consumo total</span>
+                <h3 class="h4 font-monospace text-dark mb-0 fw-bold">{{ resumen.total_consumo }} kWh</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de Dispositivos Instalados -->
+<div class="card shadow-sm border-light-subtle rounded-3">
+    <div class="card-body p-0">
+        {% if zonas %}
+        <div class="table-responsive table-responsive-custom">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col" class="ps-4">Zona</th>
+                        <th scope="col">Dispositivo</th>
+                        <th scope="col" class="text-end pe-4">Consumo kWh</th>
+                        <th scope="col" class="text-end pe-4">Límite kWh</th>
+                        <th scope="col">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for z in zonas %}
+                    <tr>
+                        <td class="fw-semibold text-dark">#{{ z.nombre}}</td>
+                        <td class="fw-semibold text-dark">{{ z.cantidad_dispositivos }}</td>
+                        <td class="text-end pe-4 font-monospace fw-bold text-secondary">{{ z.total_consumo }} kWh
+                        </td>
+                        <td class="text-end pe-4 font-monospace fw-bold text-secondary">{{ z.limite_kwh }} kWh
+                        <td>
+                            {% if z.estado == 'Límite superado' %}
+                                <span class="badge bg-danger fs-6 px-3 py-2" aria-label="Estado: Límite de consumo superado">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Límite superado
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success fs-6 px-3 py-2" aria-label="Estado: Dentro del límite de consumo">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Dentro del límite
+                                </span>
+                            {% endif %}
+                        </td>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <!-- Estado alternativo: Zona sin dispositivos (CA-01) -->
+        <div class="text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+            <p class="fs-5 text-muted mb-0">No hay zonas para mostrar</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -78,6 +78,26 @@ def cargar_dispositivos():
         d["zona_nombre"] = mapa_zona.get(d.get("zona_id"), "Desconocida")
 
     return dispositivos
-
+def obtener_resumen_zonas():
+    """
+    Retorna el resumen de consumo energético por zonas.
+    """
+    zonas = cargar_json("zonas.json")
+    dispositivos = cargar_json("dispositivos.json")
+    for zona in zonas:
+            conteo = sum(1 for d in dispositivos if d.get("zona_id") == zona.get("id"))
+            zona["cantidad_dispositivos"] = conteo
+    consumo_total = sum(float(d.get("consumo_kwh", 0)) for d in dispositivos)
+    limite = float(zona.get("limite_kwh", 0))
+    estado = "Límite superado" if consumo_total > limite else "Dentro del límite"
+    return {
+        "zonas": zonas,
+        "cantidad_zonas": len(zonas),
+        "cantidad_dispositivos": len(dispositivos),
+        "total_consumo": round(consumo_total, 2),
+        "limite_kwh": limite,
+        "estado": estado,
+        }
+   
 
 
