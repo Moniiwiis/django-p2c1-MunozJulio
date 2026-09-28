@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from core.models import BaseModel
 
 class Periodo(BaseModel):
@@ -7,6 +8,14 @@ class Periodo(BaseModel):
     fecha_termino = models.DateField()
     dias_computables = models.IntegerField()
     estado = models.CharField(max_length=20, default='Abierto')
+
+    def clean(self):
+        super().clean()
+        if self.fecha_inicio and self.fecha_termino:
+            if self.fecha_termino < self.fecha_inicio:
+                raise ValidationError({'fecha_termino': 'La fecha de término no puede ser anterior a la fecha de inicio.'})
+        if self.dias_computables is not None and self.dias_computables <= 0:
+            raise ValidationError({'dias_computables': 'Los días computables deben ser mayores a cero.'})
 
     def dias_transcurridos(self):
         hoy = timezone.now().date()
@@ -53,6 +62,13 @@ class ConfiguracionMeta(BaseModel):
     ponderacion = models.DecimalField(max_digits=5, decimal_places=2)
     umbral_minimo = models.DecimalField(max_digits=5, decimal_places=2, default=80.00)
     maximo_computable = models.DecimalField(max_digits=5, decimal_places=2, default=150.00)
+
+    def clean(self):
+        super().clean()
+        if self.valor_objetivo is not None and self.valor_objetivo <= 0:
+            raise ValidationError({'valor_objetivo': 'El valor objetivo de la meta debe ser estrictamente mayor a 0.'})
+        if self.ponderacion is not None and (self.ponderacion < 0 or self.ponderacion > 100):
+            raise ValidationError({'ponderacion': 'La ponderación debe estar entre 0% y 100%.'})
 
     class Meta:
         # Asegura que no exista una meta duplicada para la misma combinación de ítem, período y funcionario
