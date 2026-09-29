@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from core.models import BaseModel
 
 class Actividad(BaseModel):
@@ -13,6 +14,12 @@ class Actividad(BaseModel):
     funcionario = models.ForeignKey("accounts.Funcionario", on_delete=models.RESTRICT)
     item = models.ForeignKey("configuration.ItemMedicion", on_delete=models.RESTRICT)
     periodo = models.ForeignKey("configuration.Periodo", on_delete=models.RESTRICT)
+
+    def clean(self):
+        super().clean()
+        if self.fecha_actividad and self.periodo:
+            if self.fecha_actividad < self.periodo.fecha_inicio or self.fecha_actividad > self.periodo.fecha_termino:
+                raise ValidationError({'fecha_actividad': f'La fecha de la actividad debe estar dentro del período configurado ({self.periodo.fecha_inicio} a {self.periodo.fecha_termino}).'})
 
     def save(self, *args, **kwargs):
         if not self.codigo_evidencia_unico:
