@@ -30,14 +30,28 @@ El proyecto está organizado en 6 aplicaciones independientes con responsabilida
 
 ## 🔑 Cuentas de Prueba y Restricciones de Seguridad (Scoping)
 
-Para demostrar las restricciones de seguridad por rol y delegación en el **Django Admin**:
+Para demostrar las restricciones de seguridad por rol y delegación en la aplicación y en **Django Admin**:
 
 | Usuario | Contraseña | Rol / Contexto | Permisos en Django Admin |
 | :--- | :--- | :--- | :--- |
 | **`admin_sgr`** | `Admin1234!` | Superusuario / Administrador | **Acceso Total**: Visualiza y edita todas las delegaciones y registros. |
-| **`delegado_centro`** | `User1234!` | Delegado Centro (Staff) | **Scoping**: Solo visualiza y gestiona funcionarios/actividades de **Delegación La Serena Centro**. |
-| **`delegado_companias`** | `User1234!` | Delegado Las Compañías (Staff) | **Scoping**: Solo visualiza y gestiona funcionarios/actividades de **Delegación Las Compañías**. |
-| **`funcionario_juan`** | `User1234!` | Funcionario (Staff) | **Acceso Limitado**: Restringido a su ámbito operativo. |
+| **`delegado_centro`** | `User1234!` | Delegado Centro (Staff) | **Scoping**: Consulta su nómina y gestiona actividades/compromisos de **Delegación La Serena Centro**. |
+| **`delegado_companias`** | `User1234!` | Delegado Las Compañías (Staff) | **Scoping**: Consulta su nómina y gestiona actividades/compromisos de **Delegación Las Compañías**. |
+| **`funcionario_juan`** | `User1234!` | Funcionario (Staff) | Registra y actualiza sus actividades/compromisos; no elimina ni administra otros perfiles. |
+| **`coordinador_sgr`** | `User1234!` | Coordinador del sistema | Consulta transversal de indicadores y módulos; sin acciones de escritura. |
+| **`verificador_centro`** | `User1234!` | Verificador | Consulta actividades y aprueba/rechaza evidencias; no edita otros datos. |
+| **`consulta_sgr`** | `User1234!` | Usuario de consulta | Acceso de solo lectura a inicio e informes. |
+
+### Actores y responsabilidades
+
+| Actor | Responsabilidad principal en la aplicación |
+| :--- | :--- |
+| Administrador | Configura delegaciones, usuarios, cargos, catálogos, períodos, metas, ponderaciones y permisos. |
+| Coordinador del sistema | Supervisa la operación transversal y consulta indicadores, criterios y reportes. |
+| Delegado o jefatura | Consulta su delegación, registra/revisa compromisos y acompaña el cumplimiento de su equipo. |
+| Funcionario | Registra actividades y compromisos propios, y actualiza su avance operativo. |
+| Verificador | Revisa evidencias, aprueba o rechaza registros y deja trazabilidad de la decisión. |
+| Usuario de consulta | Accede a tableros e informes sin modificar información operativa. |
 
 ---
 
@@ -49,12 +63,13 @@ Para demostrar las restricciones de seguridad por rol y delegación en el **Djan
    - `ItemMedicionInline` dentro de `CargoAdmin`.
 2. **Acciones Personalizadas**:
    - `aprobar_evidencias` y `rechazar_evidencias` en `ActividadAdmin`.
-   - `marcar_como_realizado` y `marcar_como_en_proceso` en `CompromisoAgendaAdmin`.
-3. **Validación Controlada (`clean()`)**:
+   - `marcar_como_pendiente`, `marcar_como_realizado` y `marcar_como_en_proceso` en `CompromisoAgendaAdmin`.
+3. **Auditoría visible en Admin**: `created_at`, `updated_at` y `deleted_at` aparecen como datos de solo lectura; `updated_at` y `deleted_at` también se incluyen en las columnas.
+4. **Validación Controlada (`clean()`)**:
    - `Periodo.clean()`: Valida que la `fecha_termino` no sea anterior a la `fecha_inicio`.
    - `ConfiguracionMeta.clean()`: Valida que `valor_objetivo` > 0 y `ponderacion` entre 0% y 100%.
    - `Actividad.clean()`: Valida que la `fecha_actividad` esté dentro del rango del período seleccionado.
-4. **Optimización de Consultas (`list_select_related`)**:
+5. **Optimización de Consultas (`list_select_related`)**:
    - Implementado en todos los ModelAdmins para evitar consultas $N+1$ en relaciones de clave foránea.
 
 ---

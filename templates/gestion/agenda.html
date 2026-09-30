@@ -10,14 +10,14 @@
       <h2 class="font-display text-xl font-extrabold text-[#8B1D19]">Módulo: Agenda y Compromisos Territoriales</h2>
       <p class="text-xs text-slate-500 mt-1">Seguimiento de compromisos adquiridos en terreno por los funcionarios.</p>
     </div>
-    <button onclick="document.getElementById('modal-compromiso').showModal()" class="px-5 py-2.5 rounded-2xl text-xs font-extrabold bg-[#C41230] text-white hover:bg-[#8B1D19] shadow-md transition-all flex items-center gap-2 cursor-pointer">
+    {% if can_create_agenda %}<button onclick="document.getElementById('modal-compromiso').showModal()" class="px-5 py-2.5 rounded-2xl text-xs font-extrabold bg-[#C41230] text-white hover:bg-[#8B1D19] shadow-md transition-all flex items-center gap-2 cursor-pointer">
       <i data-lucide="plus-circle" class="w-4 h-4"></i>
       <span>+ Nuevo Compromiso</span>
-    </button>
+    </button>{% endif %}
   </div>
 
   <!-- Modal Nuevo Compromiso -->
-  <dialog id="modal-compromiso" class="rounded-3xl p-6 max-w-md w-full bg-white shadow-2xl backdrop:bg-slate-900/40 border border-red-100">
+  {% if can_create_agenda %}<dialog id="modal-compromiso" class="rounded-3xl p-6 max-w-md w-full bg-white shadow-2xl backdrop:bg-slate-900/40 border border-red-100">
     <div class="flex justify-between items-center pb-4 border-b border-slate-100 mb-4">
       <h3 class="font-display font-extrabold text-base text-[#8B1D19] flex items-center gap-2">
         <i data-lucide="calendar" class="w-5 h-5 text-[#C41230]"></i> Registrar Nuevo Compromiso
@@ -62,7 +62,7 @@
         <button type="submit" class="px-5 py-2.5 rounded-2xl bg-[#C41230] text-white hover:bg-[#8B1D19] shadow-md">Guardar Compromiso</button>
       </div>
     </form>
-  </dialog>
+  </dialog>{% endif %}
 
   <!-- Tabla de Compromisos -->
   <div class="bg-white rounded-3xl border border-[rgba(196,18,48,0.18)] shadow-sm overflow-hidden">
@@ -78,7 +78,7 @@
             <th class="p-4">Territorio</th>
             <th class="p-4">Fecha Comprometida</th>
             <th class="p-4">Estado</th>
-            <th class="p-4 text-center">Acciones (CRUD)</th>
+            <th class="p-4 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
@@ -93,15 +93,16 @@
             </td>
             <td class="p-4 text-center">
               <div class="flex items-center justify-center gap-1.5">
-                <button onclick="document.getElementById('modal-edit-comp-{{ comp.id }}').showModal()" class="p-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition-colors" title="Editar">
+                {% if can_edit_agenda %}<button onclick="document.getElementById('modal-edit-comp-{{ comp.id }}').showModal()" class="p-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition-colors" title="Editar">
                   <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                </button>
-                <button onclick="document.getElementById('modal-del-comp-{{ comp.id }}').showModal()" class="p-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition-colors" title="Eliminar">
+                </button>{% endif %}
+                {% if can_delete_agenda %}<button onclick="document.getElementById('modal-del-comp-{{ comp.id }}').showModal()" class="p-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition-colors" title="Eliminar">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                </button>
+                </button>{% endif %}
               </div>
 
               <!-- Modal Editar Compromiso -->
+              {% if can_edit_agenda %}
               <dialog id="modal-edit-comp-{{ comp.id }}" class="rounded-3xl p-6 max-w-md w-full text-left bg-white shadow-2xl backdrop:bg-slate-900/40 border border-amber-100">
                 <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
                   <h3 class="font-display font-extrabold text-sm text-amber-800 flex items-center gap-2">
@@ -138,8 +139,10 @@
                   </div>
                 </form>
               </dialog>
+              {% endif %}
 
               <!-- Modal Eliminar Compromiso -->
+              {% if can_delete_agenda %}
               <dialog id="modal-del-comp-{{ comp.id }}" class="rounded-3xl p-6 max-w-sm w-full text-left bg-white shadow-2xl backdrop:bg-slate-900/40 border border-red-100">
                 <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-3">
                   <h3 class="font-display font-extrabold text-sm text-red-700 flex items-center gap-2">
@@ -154,6 +157,7 @@
                   <button type="submit" class="px-4 py-2 rounded-xl bg-red-600 text-white font-extrabold">Sí, Eliminar</button>
                 </form>
               </dialog>
+              {% endif %}
             </td>
           </tr>
           {% empty %}

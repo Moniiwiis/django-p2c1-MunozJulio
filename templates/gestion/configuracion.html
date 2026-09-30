@@ -10,14 +10,14 @@
       <h2 class="font-display text-xl font-extrabold text-[#8B1D19]">Módulo: Configuración y Metas Institucionales</h2>
       <p class="text-xs text-slate-500 mt-1">Catálogo de actividades, ítems de medición y metas ponderadas SGR.</p>
     </div>
-    <button onclick="document.getElementById('modal-meta').showModal()" class="px-5 py-2.5 rounded-2xl text-xs font-extrabold bg-[#C41230] text-white hover:bg-[#8B1D19] shadow-md transition-all flex items-center gap-2 cursor-pointer">
+    {% if can_manage_configuration %}<button onclick="document.getElementById('modal-meta').showModal()" class="px-5 py-2.5 rounded-2xl text-xs font-extrabold bg-[#C41230] text-white hover:bg-[#8B1D19] shadow-md transition-all flex items-center gap-2 cursor-pointer">
       <i data-lucide="plus-circle" class="w-4 h-4"></i>
       <span>+ Nueva Meta SGR</span>
-    </button>
+    </button>{% endif %}
   </div>
 
   <!-- Modal Nueva Meta -->
-  <dialog id="modal-meta" class="rounded-3xl p-6 max-w-md w-full bg-white shadow-2xl backdrop:bg-slate-900/40 border border-red-100">
+  {% if can_manage_configuration %}<dialog id="modal-meta" class="rounded-3xl p-6 max-w-md w-full bg-white shadow-2xl backdrop:bg-slate-900/40 border border-red-100">
     <div class="flex justify-between items-center pb-4 border-b border-slate-100 mb-4">
       <h3 class="font-display font-extrabold text-base text-[#8B1D19] flex items-center gap-2">
         <i data-lucide="sliders" class="w-5 h-5 text-[#C41230]"></i> Configurar Nueva Meta SGR
@@ -78,7 +78,7 @@
         <button type="submit" class="px-5 py-2.5 rounded-2xl bg-[#C41230] text-white hover:bg-[#8B1D19] shadow-md">Guardar Meta</button>
       </div>
     </form>
-  </dialog>
+  </dialog>{% endif %}
 
   <!-- Tabla de Metas -->
   <div class="bg-white rounded-3xl border border-[rgba(196,18,48,0.18)] shadow-sm overflow-hidden">
@@ -97,7 +97,7 @@
             <th class="p-4">% Cumplimiento</th>
             <th class="p-4">Ponderado</th>
             <th class="p-4">Semáforo SGR</th>
-            <th class="p-4 text-center">Acciones (CRUD)</th>
+            <th class="p-4 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
@@ -133,15 +133,16 @@
             </td>
             <td class="p-4 text-center">
               <div class="flex items-center justify-center gap-1.5">
-                <button onclick="document.getElementById('modal-edit-meta-{{ meta.id }}').showModal()" class="p-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition-colors" title="Editar Meta">
+                {% if can_manage_configuration %}<button onclick="document.getElementById('modal-edit-meta-{{ meta.id }}').showModal()" class="p-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition-colors" title="Editar Meta">
                   <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                 </button>
                 <button onclick="document.getElementById('modal-del-meta-{{ meta.id }}').showModal()" class="p-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition-colors" title="Eliminar Meta">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                </button>
+                </button>{% endif %}
               </div>
 
               <!-- Modal Editar Meta -->
+              {% if can_manage_configuration %}
               <dialog id="modal-edit-meta-{{ meta.id }}" class="rounded-3xl p-6 max-w-md w-full text-left bg-white shadow-2xl backdrop:bg-slate-900/40 border border-amber-100">
                 <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
                   <h3 class="font-display font-extrabold text-sm text-amber-800 flex items-center gap-2">
@@ -181,6 +182,7 @@
                   <button type="submit" class="px-4 py-2 rounded-xl bg-red-600 text-white font-extrabold">Sí, Eliminar</button>
                 </form>
               </dialog>
+              {% endif %}
             </td>
           </tr>
           {% empty %}

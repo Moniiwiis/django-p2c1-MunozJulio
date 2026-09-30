@@ -4,10 +4,12 @@ from django.core.exceptions import ValidationError
 from core.models import BaseModel
 
 class Periodo(BaseModel):
+    ESTADO_CHOICES = [('Abierto', 'Abierto'), ('Cerrado', 'Cerrado')]
+
     fecha_inicio = models.DateField()
     fecha_termino = models.DateField()
     dias_computables = models.IntegerField()
-    estado = models.CharField(max_length=20, default='Abierto')
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Abierto')
 
     def clean(self):
         super().clean()
@@ -36,11 +38,13 @@ class Periodo(BaseModel):
         return f"Período {self.fecha_inicio} a {self.fecha_termino}"
 
 class CatalogoActividad(BaseModel):
+    ESTADO_CHOICES = [('Activo', 'Activo'), ('Inactivo', 'Inactivo')]
+
     tipo_actividad = models.CharField(max_length=100)
     servicio = models.CharField(max_length=100)
     tipo_atencion = models.CharField(max_length=100, null=True, blank=True)
     subtipo_atencion = models.CharField(max_length=100, null=True, blank=True)
-    estado = models.CharField(max_length=20, default='Activo')
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Activo')
 
     def __str__(self):
         return f"{self.tipo_actividad} - {self.servicio}"
@@ -110,4 +114,4 @@ class ConfiguracionMeta(BaseModel):
             return 'ROJO'
 
     def __str__(self):
-        return f"Meta para {self.item} - Período {self.periodo}"
+        return f"Meta para {self.item} - Período {self.periodo}"

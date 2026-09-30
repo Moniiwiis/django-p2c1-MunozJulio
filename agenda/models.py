@@ -2,13 +2,20 @@ from django.db import models
 from core.models import BaseModel
 
 class CompromisoAgenda(BaseModel):
+    ESTADO_CHOICES = [
+        ('Ingresado', 'Ingresado'),
+        ('Pendiente', 'Pendiente'),
+        ('En proceso', 'En proceso'),
+        ('Realizado', 'Realizado'),
+    ]
+
     actividad_origen = models.ForeignKey("activities.Actividad", on_delete=models.SET_NULL, null=True, blank=True)
     solicitante = models.CharField(max_length=100)
     territorio = models.CharField(max_length=100, null=True, blank=True)
     responsable = models.ForeignKey("accounts.Funcionario", on_delete=models.RESTRICT)
     area_apoyo = models.CharField(max_length=100, null=True, blank=True)
     fecha_comprometida = models.DateField()
-    estado = models.CharField(max_length=30, default='Ingresado')
+    estado = models.CharField(max_length=30, choices=ESTADO_CHOICES, default='Ingresado')
     observacion = models.TextField(null=True, blank=True)
 
     def __str__(self):

@@ -3,8 +3,10 @@ from django.contrib.auth.models import User
 from core.models import BaseModel
 
 class Delegacion(BaseModel):
+    ESTADO_CHOICES = [('Activa', 'Activa'), ('Inactiva', 'Inactiva')]
+
     nombre = models.CharField(max_length=100)
-    estado = models.CharField(max_length=20, default='Activa')
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Activa')
     ambito = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
@@ -18,11 +20,13 @@ class Cargo(BaseModel):
         return self.nombre_cargo
 
 class Funcionario(BaseModel):
+    ESTADO_CHOICES = [('Activo', 'Activo'), ('Inactivo', 'Inactivo')]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='funcionario')
     identificador_institucional = models.CharField(max_length=20, unique=True)
     delegacion = models.ForeignKey(Delegacion, on_delete=models.RESTRICT, null=True, blank=True)
     cargo = models.ForeignKey(Cargo, on_delete=models.RESTRICT)
-    estado = models.CharField(max_length=20, default='Activo')
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Activo')
 
     def __str__(self):
         return f"{self.user.username} - {self.identificador_institucional}"

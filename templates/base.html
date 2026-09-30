@@ -64,14 +64,26 @@
 
       <!-- Badges de Estado y Acceso Rápido -->
       <div class="flex items-center gap-3">
+        {% if user.is_authenticated %}
+          <div class="hidden sm:block text-right text-xs">
+            <div class="font-bold">{{ user.get_full_name|default:user.username }}</div>
+            <div class="text-white/75">{{ actor_role }}</div>
+          </div>
+          <form method="post" action="/admin/logout/">
+            {% csrf_token %}
+            <button type="submit" class="px-3 py-2 rounded-full text-xs font-bold bg-white/15 text-white border border-white/30 hover:bg-white/25">Cerrar sesión</button>
+          </form>
+        {% else %}
+          <a href="/admin/login/?next=/" class="px-4 py-2 rounded-full text-xs font-bold bg-white text-[#C41230]">Iniciar sesión</a>
+        {% endif %}
         <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30 backdrop-blur-sm">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           Plataforma Municipal La Serena
         </span>
-        <a href="/admin/" target="_blank" class="px-4 py-2 rounded-full text-xs font-bold bg-white text-[#C41230] hover:bg-red-50 shadow-md transition-all active:scale-95 flex items-center gap-1.5">
+        {% if user.is_staff %}<a href="/admin/" target="_blank" class="px-4 py-2 rounded-full text-xs font-bold bg-white text-[#C41230] hover:bg-red-50 shadow-md transition-all active:scale-95 flex items-center gap-1.5">
           <i data-lucide="shield-check" class="w-4 h-4"></i>
           <span>Django Admin</span>
-        </a>
+        </a>{% endif %}
       </div>
     </div>
   </header>
@@ -104,36 +116,36 @@
           <span>Inicio / Resumen</span>
         </a>
 
-        <a href="{% url 'gestion_funcionarios' %}" 
+        {% if can_view_staff %}<a href="{% url 'gestion_funcionarios' %}" 
            class="flex items-center gap-3 px-3.5 py-3 rounded-2xl transition-all {% if request.resolver_match.url_name == 'gestion_funcionarios' %}bg-[#C41230] text-white shadow-md shadow-red-900/20{% else %}text-slate-700 hover:bg-red-50 hover:text-[#C41230]{% endif %}">
           <i data-lucide="users" class="w-4 h-4"></i>
           <span>Gestión de Funcionarios</span>
-        </a>
+        </a>{% endif %}
 
-        <a href="{% url 'gestion_actividades' %}" 
+        {% if can_view_activities %}<a href="{% url 'gestion_actividades' %}" 
            class="flex items-center gap-3 px-3.5 py-3 rounded-2xl transition-all {% if request.resolver_match.url_name == 'gestion_actividades' %}bg-[#C41230] text-white shadow-md shadow-red-900/20{% else %}text-slate-700 hover:bg-red-50 hover:text-[#C41230]{% endif %}">
           <i data-lucide="clipboard-list" class="w-4 h-4"></i>
           <span>Actividades y Evidencias</span>
-        </a>
+        </a>{% endif %}
 
 
-        <a href="{% url 'gestion_agenda' %}" 
+        {% if can_view_agenda %}<a href="{% url 'gestion_agenda' %}" 
            class="flex items-center gap-3 px-3.5 py-3 rounded-2xl transition-all {% if request.resolver_match.url_name == 'gestion_agenda' %}bg-[#C41230] text-white shadow-md shadow-red-900/20{% else %}text-slate-700 hover:bg-red-50 hover:text-[#C41230]{% endif %}">
           <i data-lucide="calendar" class="w-4 h-4"></i>
           <span>Agenda y Compromisos</span>
-        </a>
+        </a>{% endif %}
 
-        <a href="{% url 'gestion_configuracion' %}" 
+        {% if can_view_configuration %}<a href="{% url 'gestion_configuracion' %}" 
            class="flex items-center gap-3 px-3.5 py-3 rounded-2xl transition-all {% if request.resolver_match.url_name == 'gestion_configuracion' %}bg-[#C41230] text-white shadow-md shadow-red-900/20{% else %}text-slate-700 hover:bg-red-50 hover:text-[#C41230]{% endif %}">
           <i data-lucide="sliders" class="w-4 h-4"></i>
           <span>Configuración y Metas</span>
-        </a>
+        </a>{% endif %}
 
-        <a href="{% url 'gestion_reportes' %}" 
+        {% if can_view_reports %}<a href="{% url 'gestion_reportes' %}" 
            class="flex items-center gap-3 px-3.5 py-3 rounded-2xl transition-all {% if request.resolver_match.url_name == 'gestion_reportes' %}bg-[#C41230] text-white shadow-md shadow-red-900/20{% else %}text-slate-700 hover:bg-red-50 hover:text-[#C41230]{% endif %}">
           <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
           <span>Analítica e Informes</span>
-        </a>
+        </a>{% endif %}
       </nav>
 
       <!-- Banner Institucional SVG Horizontal Color -->

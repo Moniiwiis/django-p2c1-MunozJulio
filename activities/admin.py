@@ -1,5 +1,6 @@
 from django.contrib import admin
 from core.admin import BaseScopedModelAdmin
+from core.access import has_capability
 from .models import Actividad, Evidencia, ValidacionEvidencia, AtencionSocialGestion
 
 class EvidenciaInline(admin.TabularInline):
@@ -36,7 +37,7 @@ class ActividadAdmin(BaseScopedModelAdmin):
     inlines = [EvidenciaInline, ValidacionEvidenciaInline, AtencionSocialGestionInline]
     actions = ['aprobar_evidencias', 'rechazar_evidencias']
 
-    @admin.action(description="Aprobar evidencias para actividades seleccionadas")
+    @admin.action(description="Aprobar evidencias para actividades seleccionadas", permissions=['validate'])
     def aprobar_evidencias(self, request, queryset):
         verificador = getattr(request.user, 'funcionario', None)
         count = 0
@@ -50,7 +51,7 @@ class ActividadAdmin(BaseScopedModelAdmin):
             count += 1
         self.message_user(request, f"Se registraron {count} aprobaciones de evidencia.")
 
-    @admin.action(description="Rechazar evidencias para actividades seleccionadas")
+    @admin.action(description="Rechazar evidencias para actividades seleccionadas", permissions=['validate'])
     def rechazar_evidencias(self, request, queryset):
         verificador = getattr(request.user, 'funcionario', None)
         count = 0
@@ -71,6 +72,22 @@ class ActividadAdmin(BaseScopedModelAdmin):
         if hasattr(request.user, 'funcionario') and request.user.funcionario.delegacion:
             return qs.filter(funcionario__delegacion=request.user.funcionario.delegacion)
         return qs
+
+    def has_change_permission(self, request, obj=None):
+        return super().has_change_permission(request, obj) or has_capability(request.user, 'actividades', 'validate')
+
+    def has_validate_permission(self, request):
+        return has_capability(request.user, 'actividades', 'validate')
+
+    def get_readonly_fields(self, request, obj=None):
+        if has_capability(request.user, 'actividades', 'validate') and not has_capability(request.user, 'actividades', 'edit'):
+            return [field.name for field in self.model._meta.fields]
+        return super().get_readonly_fields(request, obj)
+
+    def get_inline_instances(self, request, obj=None):
+        if has_capability(request.user, 'actividades', 'validate') and not has_capability(request.user, 'actividades', 'edit'):
+            return []
+        return super().get_inline_instances(request, obj)
 
 @admin.register(Evidencia)
 class EvidenciaAdmin(BaseScopedModelAdmin):

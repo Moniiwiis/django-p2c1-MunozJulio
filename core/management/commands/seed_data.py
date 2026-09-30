@@ -29,9 +29,11 @@ class Command(BaseCommand):
 
         # 2. Roles
         rol_admin, _ = Rol.objects.get_or_create(nombre_rol="Administrador")
+        rol_coordinador, _ = Rol.objects.get_or_create(nombre_rol="Coordinador del sistema")
         rol_delegado, _ = Rol.objects.get_or_create(nombre_rol="Delegado / Jefatura")
         rol_funcionario, _ = Rol.objects.get_or_create(nombre_rol="Funcionario")
         rol_verificador, _ = Rol.objects.get_or_create(nombre_rol="Verificador")
+        rol_consulta, _ = Rol.objects.get_or_create(nombre_rol="Usuario de consulta")
 
         # 3. Cargos
         cargo_gestor, _ = Cargo.objects.get_or_create(
@@ -152,14 +154,79 @@ class Command(BaseCommand):
         )
         FuncionarioRol.objects.get_or_create(funcionario=f_juan, rol=rol_funcionario)
 
-        # e) Asignar permisos de modelos de Django a los usuarios de staff
-        from django.contrib.auth.models import Permission
-        all_perms = Permission.objects.filter(
-            content_type__app_label__in=['accounts', 'activities', 'agenda', 'configuration', 'analytics']
+        # f) Coordinador transversal de solo lectura
+        u_coordinador, created = User.objects.get_or_create(
+            username="coordinador_sgr",
+            defaults={
+                'email': "coordinacion@laserena.cl",
+                'first_name': "Coordinador",
+                'last_name': "Sistema",
+                'is_staff': True,
+            }
         )
-        u_centro.user_permissions.set(all_perms)
-        u_comp.user_permissions.set(all_perms)
-        u_juan.user_permissions.set(all_perms)
+        if created:
+            u_coordinador.set_password("User1234!")
+            u_coordinador.save()
+        f_coordinador, _ = Funcionario.objects.get_or_create(
+            user=u_coordinador,
+            defaults={
+                'identificador_institucional': "COO-001",
+                'cargo': cargo_coord,
+                'estado': "Activo",
+            }
+        )
+        FuncionarioRol.objects.get_or_create(funcionario=f_coordinador, rol=rol_coordinador)
+
+        # g) Verificador de evidencias de la Delegación Centro
+        u_verificador, created = User.objects.get_or_create(
+            username="verificador_centro",
+            defaults={
+                'email': "verificacion@laserena.cl",
+                'first_name': "Andrea",
+                'last_name': "Verificador",
+                'is_staff': True,
+            }
+        )
+        if created:
+            u_verificador.set_password("User1234!")
+            u_verificador.save()
+        f_verificador, _ = Funcionario.objects.get_or_create(
+            user=u_verificador,
+            defaults={
+                'identificador_institucional': "VER-001",
+                'delegacion': del_centro,
+                'cargo': cargo_coord,
+                'estado': "Activo",
+            }
+        )
+        FuncionarioRol.objects.get_or_create(funcionario=f_verificador, rol=rol_verificador)
+
+        # h) Usuario de consulta de solo lectura
+        u_consulta, created = User.objects.get_or_create(
+            username="consulta_sgr",
+            defaults={
+                'email': "consulta@laserena.cl",
+                'first_name': "Usuario",
+                'last_name': "Consulta",
+                'is_staff': True,
+            }
+        )
+        if created:
+            u_consulta.set_password("User1234!")
+            u_consulta.save()
+        f_consulta, _ = Funcionario.objects.get_or_create(
+            user=u_consulta,
+            defaults={
+                'identificador_institucional': "CON-001",
+                'cargo': cargo_coord,
+                'estado': "Activo",
+            }
+        )
+        FuncionarioRol.objects.get_or_create(funcionario=f_consulta, rol=rol_consulta)
+
+        # La autorización del sistema se basa en Rol; evitar permisos Django amplios heredados.
+        for demo_user in (u_centro, u_comp, u_juan, u_coordinador, u_verificador, u_consulta):
+            demo_user.user_permissions.clear()
 
         # 5. Período de medición
         periodo_actual, _ = Periodo.objects.get_or_create(
@@ -314,3 +381,6 @@ class Command(BaseCommand):
         self.stdout.write("  2) delegado_centro / User1234! (Limitado a Delegación Centro)")
         self.stdout.write("  3) delegado_companias / User1234! (Limitado a Delegación Las Compañías)")
         self.stdout.write("  4) funcionario_juan / User1234! (Funcionario La Serena Centro)")
+        self.stdout.write("  5) coordinador_sgr / User1234! (Indicadores transversales, solo lectura)")
+        self.stdout.write("  6) verificador_centro / User1234! (Revisión y validación de evidencias)")
+        self.stdout.write("  7) consulta_sgr / User1234! (Tableros e informes, solo lectura)")

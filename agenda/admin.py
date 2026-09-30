@@ -9,11 +9,16 @@ class CompromisoAgendaAdmin(BaseScopedModelAdmin):
     list_filter = ('estado', 'fecha_comprometida')
     date_hierarchy = 'fecha_comprometida'
     list_select_related = ('responsable__user', 'responsable__delegacion', 'actividad_origen')
-    actions = ['marcar_como_realizado', 'marcar_como_en_proceso']
+    actions = ['marcar_como_pendiente', 'marcar_como_realizado', 'marcar_como_en_proceso']
 
     @admin.display(description='Delegación', ordering='responsable__delegacion__nombre')
     def get_delegacion(self, obj):
         return obj.responsable.delegacion.nombre if (obj.responsable and obj.responsable.delegacion) else "-"
+
+    @admin.action(description="Marcar compromisos seleccionados como 'Pendiente'")
+    def marcar_como_pendiente(self, request, queryset):
+        updated = queryset.update(estado='Pendiente')
+        self.message_user(request, f"{updated} compromisos marcados como Pendientes.")
 
     @admin.action(description="Marcar compromisos seleccionados como 'Realizado'")
     def marcar_como_realizado(self, request, queryset):
