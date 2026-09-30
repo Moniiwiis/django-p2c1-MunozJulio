@@ -19,13 +19,13 @@
       Plataforma oficial de seguimiento de gestión municipal (SGR), control de actividades, compromisos de agenda e informes territoriales.
     </p>
     <div class="flex flex-wrap gap-3 pt-2">
-      <a href="{% url 'gestion_actividades' %}" class="px-6 py-3 rounded-2xl text-xs font-extrabold bg-white text-[#8B1D19] shadow-lg transition-all hover:bg-red-50 active:scale-95 flex items-center gap-2">
+      {% if can_view_activities %}<a href="{% url 'gestion_actividades' %}" class="px-6 py-3 rounded-2xl text-xs font-extrabold bg-white text-[#8B1D19] shadow-lg transition-all hover:bg-red-50 active:scale-95 flex items-center gap-2">
         <span>Ver Actividades</span>
         <i data-lucide="arrow-right" class="w-4 h-4"></i>
-      </a>
-      <a href="/admin/" target="_blank" class="px-6 py-3 rounded-2xl text-xs font-extrabold bg-white/15 text-white border border-white/30 hover:bg-white/25 transition-all">
+      </a>{% endif %}
+      {% if user.is_staff %}<a href="/admin/" target="_blank" class="px-6 py-3 rounded-2xl text-xs font-extrabold bg-white/15 text-white border border-white/30 hover:bg-white/25 transition-all">
         Administración Django Admin
-      </a>
+      </a>{% endif %}
     </div>
   </div>
 </section>

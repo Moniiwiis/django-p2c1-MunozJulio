@@ -10,14 +10,14 @@
       <h2 class="font-display text-xl font-extrabold text-[#8B1D19]">Módulo: Actividades y Evidencias</h2>
       <p class="text-xs text-slate-500 mt-1">Control de evidencias únicas, validaciones de terreno y trazabilidad.</p>
     </div>
-    <button onclick="document.getElementById('modal-actividad').showModal()" class="px-5 py-2.5 rounded-2xl text-xs font-extrabold bg-[#C41230] text-white hover:bg-[#8B1D19] shadow-md transition-all flex items-center gap-2 cursor-pointer">
+    {% if can_create_activities %}<button onclick="document.getElementById('modal-actividad').showModal()" class="px-5 py-2.5 rounded-2xl text-xs font-extrabold bg-[#C41230] text-white hover:bg-[#8B1D19] shadow-md transition-all flex items-center gap-2 cursor-pointer">
       <i data-lucide="plus-circle" class="w-4 h-4"></i>
       <span>+ Nueva Actividad</span>
-    </button>
+    </button>{% endif %}
   </div>
 
   <!-- Modal Nueva Actividad -->
-  <dialog id="modal-actividad" class="rounded-3xl p-6 max-w-lg w-full bg-white shadow-2xl backdrop:bg-slate-900/40 border border-red-100">
+  {% if can_create_activities %}<dialog id="modal-actividad" class="rounded-3xl p-6 max-w-lg w-full bg-white shadow-2xl backdrop:bg-slate-900/40 border border-red-100">
     <div class="flex justify-between items-center pb-4 border-b border-slate-100 mb-4">
       <h3 class="font-display font-extrabold text-base text-[#8B1D19] flex items-center gap-2">
         <i data-lucide="clipboard-list" class="w-5 h-5 text-[#C41230]"></i> Registrar Nueva Actividad
@@ -82,7 +82,7 @@
         <button type="submit" class="px-5 py-2.5 rounded-2xl bg-[#C41230] text-white hover:bg-[#8B1D19] shadow-md">Guardar Actividad</button>
       </div>
     </form>
-  </dialog>
+  </dialog>{% endif %}
 
   <!-- Tabla de Actividades -->
   <div class="bg-white rounded-3xl border border-[rgba(196,18,48,0.18)] shadow-sm overflow-hidden">
@@ -99,7 +99,7 @@
             <th class="p-4">Funcionario</th>
             <th class="p-4">Ítem Medición</th>
             <th class="p-4">Validación SGR</th>
-            <th class="p-4 text-center">Acciones (CRUD)</th>
+            <th class="p-4 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
@@ -120,15 +120,23 @@
             </td>
             <td class="p-4 text-center">
               <div class="flex items-center justify-center gap-1.5">
-                <button onclick="document.getElementById('modal-edit-act-{{ act.id }}').showModal()" class="p-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition-colors" title="Editar">
+                {% if can_edit_activities %}<button onclick="document.getElementById('modal-edit-act-{{ act.id }}').showModal()" class="p-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition-colors" title="Editar">
                   <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                </button>
-                <button onclick="document.getElementById('modal-del-act-{{ act.id }}').showModal()" class="p-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition-colors" title="Eliminar">
+                </button>{% endif %}
+                {% if can_delete_activities %}<button onclick="document.getElementById('modal-del-act-{{ act.id }}').showModal()" class="p-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition-colors" title="Eliminar">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                </button>
+                </button>{% endif %}
+                {% if can_validate_activities %}
+                <form action="{% url 'gestion_actividad_validar' act.id %}" method="POST" class="inline-flex gap-1">
+                  {% csrf_token %}
+                  <button name="resultado" value="Aprobado" class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200" title="Aprobar evidencia">Aprobar</button>
+                  <button name="resultado" value="Rechazado" class="px-2 py-1 rounded-lg bg-red-50 text-red-800 border border-red-200" title="Rechazar evidencia">Rechazar</button>
+                </form>
+                {% endif %}
               </div>
 
               <!-- Modal Editar Actividad -->
+              {% if can_edit_activities %}
               <dialog id="modal-edit-act-{{ act.id }}" class="rounded-3xl p-6 max-w-lg w-full text-left bg-white shadow-2xl backdrop:bg-slate-900/40 border border-amber-100">
                 <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
                   <h3 class="font-display font-extrabold text-sm text-amber-800 flex items-center gap-2">
@@ -166,8 +174,10 @@
                   </div>
                 </form>
               </dialog>
+              {% endif %}
 
               <!-- Modal Eliminar Actividad -->
+              {% if can_delete_activities %}
               <dialog id="modal-del-act-{{ act.id }}" class="rounded-3xl p-6 max-w-sm w-full text-left bg-white shadow-2xl backdrop:bg-slate-900/40 border border-red-100">
                 <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-3">
                   <h3 class="font-display font-extrabold text-sm text-red-700 flex items-center gap-2">
@@ -182,6 +192,7 @@
                   <button type="submit" class="px-4 py-2 rounded-xl bg-red-600 text-white font-extrabold">Sí, Eliminar</button>
                 </form>
               </dialog>
+              {% endif %}
             </td>
           </tr>
           {% empty %}

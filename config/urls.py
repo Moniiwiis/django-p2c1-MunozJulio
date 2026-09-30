@@ -16,6 +16,7 @@ urlpatterns = [
     path('gestion/actividades/', views.gestion_actividades, name='gestion_actividades'),
     path('gestion/actividades/<int:actividad_id>/editar/', views.gestion_actividades_editar, name='gestion_actividades_editar'),
     path('gestion/actividades/<int:actividad_id>/eliminar/', views.gestion_actividades_eliminar, name='gestion_actividades_eliminar'),
+    path('gestion/actividades/<int:actividad_id>/validar/', views.gestion_actividad_validar, name='gestion_actividad_validar'),
 
     # Agenda CRUD
     path('gestion/agenda/', views.gestion_agenda, name='gestion_agenda'),
