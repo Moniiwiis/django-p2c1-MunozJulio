@@ -155,6 +155,11 @@ class ActorViewAccessTests(TestCase):
 		self.foreign_activity.refresh_from_db()
 		self.assertEqual(self.foreign_activity.descripcion_solicitud, 'Actividad ajena')
 
+	def test_delegate_can_open_admin_activity_add_form(self):
+		self.client.force_login(self.delegate)
+		response = self.client.get(reverse('admin:activities_actividad_add'))
+		self.assertEqual(response.status_code, 200)
+
 	def test_officer_cannot_create_activity_for_another_user(self):
 		self.client.force_login(self.officer)
 		response = self.client.post(reverse('gestion_actividades'), {
