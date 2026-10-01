@@ -78,13 +78,13 @@ Para demostrar las restricciones de seguridad por rol y delegación en la aplica
 
 ### 1. Clonar el repositorio y crear el entorno virtual
 ```bash
-git clone <URL_DEL_REPOSITORIO>
-cd VanguardSystemsGroup
+git clone https://github.com/Moniiwiis/django-p2c1-MunozJulio.git
+cd django-p2c1-MunozJulio
 
 # Crear y activar entorno virtual
 python -m venv .venv
 # En Windows PowerShell:
-.venv\Scripts\Activate.ps1
+source .venv\Scripts\Activate.ps1
 # En Linux/macOS:
 source .venv/bin/activate
 ```
@@ -132,8 +132,7 @@ Acceder al panel de administración en: [http://127.0.0.1:8000/admin/](http://12
 ## 🛡️ Trazabilidad Git y Gestión de Ramas
 
 - **Rama Principal**: `main`
-- **Trabajo en Ramas de Desarrollo**: `feature/backend-architecture`, `feature/django-admin-pro`, `feature/security-scoping`, `feature/seed-fixtures`
-- Para revisar el historial de merges y commits:
+- **Trabajo en Ramas de Desarrollo**: `feature/reproducible-seeds-fixtures`, `feature/role-based-tables`, `fix/admin-activity-delegate-scope`
 ```bash
 git log --oneline --graph --all
 ```

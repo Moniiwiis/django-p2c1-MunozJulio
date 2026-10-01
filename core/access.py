@@ -120,11 +120,22 @@ def scope_queryset(user, section, queryset):
                 return queryset.filter(delegacion=funcionario.delegacion)
             return queryset.filter(responsable__delegacion=funcionario.delegacion) if hasattr(queryset.model, 'responsable') else queryset.filter(funcionario__delegacion=funcionario.delegacion)
         if section == 'configuracion':
-            return queryset.filter(
-                Q(funcionario__delegacion=funcionario.delegacion)
-                | Q(item__cargo=funcionario.cargo)
-                | Q(funcionario=funcionario)
-            ).distinct()
+            model_name = queryset.model.__name__
+            if model_name == 'ItemMedicion':
+                return queryset.filter(
+                    cargo__in=Funcionario.objects.filter(delegacion=funcionario.delegacion).values('cargo_id')
+                ).distinct()
+            if model_name in {'Periodo', 'CatalogoActividad'}:
+                return queryset
+            if hasattr(queryset.model, 'funcionario'):
+                return queryset.filter(
+                    Q(funcionario__delegacion=funcionario.delegacion)
+                    | Q(item__cargo=funcionario.cargo)
+                    | Q(funcionario=funcionario)
+                ).distinct()
+            if hasattr(queryset.model, 'item'):
+                return queryset.filter(item__cargo=funcionario.cargo)
+            return queryset
 
     if OFFICER in roles:
         if section == 'funcionarios':
@@ -148,7 +159,16 @@ def scope_queryset(user, section, queryset):
                 return queryset.filter(pk=funcionario.pk)
             return queryset.filter(responsable=funcionario) if hasattr(queryset.model, 'responsable') else queryset.filter(funcionario=funcionario)
         if section == 'configuracion':
-            return queryset.filter(Q(funcionario=funcionario) | Q(item__cargo=funcionario.cargo))
+            model_name = queryset.model.__name__
+            if model_name == 'ItemMedicion':
+                return queryset.filter(cargo=funcionario.cargo)
+            if model_name in {'Periodo', 'CatalogoActividad'}:
+                return queryset
+            if hasattr(queryset.model, 'funcionario'):
+                return queryset.filter(Q(funcionario=funcionario) | Q(item__cargo=funcionario.cargo))
+            if hasattr(queryset.model, 'item'):
+                return queryset.filter(item__cargo=funcionario.cargo)
+            return queryset
 
     if VERIFIER in roles and section == 'actividades':
         return queryset
